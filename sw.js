@@ -4,7 +4,7 @@
 
    Ao mudar qualquer arquivo do jogo, SOBE O NÚMERO do CACHE abaixo.
    Sem isso o aparelho continua servindo a versão velha. */
-const CACHE = 'descobertas-v7';
+const CACHE = 'descobertas-v8';
 
 const ARQUIVOS = [
   './',
@@ -12,6 +12,7 @@ const ARQUIVOS = [
   './style.css',
   './art.js',
   './som.js',
+  './estatistica.js',
   './voz.js',
   './minijogos.js',
   './game.js',

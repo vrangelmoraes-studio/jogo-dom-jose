@@ -461,6 +461,12 @@ function telaNome() {
     S.nome = capitalizar(campo.value);
     S.inicio = Date.now();
     SOM.certo();
+    // conta quantas partidas COMEÇARAM: cruzado com as que terminaram, dá
+    // a taxa de desistência — que numa feira é um dado e tanto.
+    if (typeof ESTATISTICA !== 'undefined') {
+      ESTATISTICA.novaPartida();
+      ESTATISTICA.comecou(S);
+    }
     go(telaSalaLeitura);
   };
   q('#bIr').onclick = tentar;
@@ -1400,6 +1406,7 @@ function telaFinal() {
   const tipo = pc >= .85 ? 'ouro' : pc >= .6 ? 'prata' : 'bronze';
   const min = Math.max(1, Math.round((Date.now() - S.inicio) / 60000));
   salvar();
+  if (typeof ESTATISTICA !== 'undefined') ESTATISTICA.terminou(S);
   SOM.vitoria(); confete(60);
 
   pinta('fundo-festa', `
@@ -1508,8 +1515,10 @@ function telaProfessor() {
         e compararam</b> antes de concluir.)
       </div>
       <p style="font-size:12.5px; color:var(--texto-claro); margin-top:12px">
-        Este resumo existe só neste aparelho e nunca é enviado para a internet.
-        Ao apagar os dados do navegador, ele desaparece.
+        Este resumo existe só neste aparelho. <b>O nome da criança nunca sai
+        daqui.</b> Para a apuração da feira, o jogo envia apenas números
+        anônimos — acertos, páginas, tempo e fase — sem nada que identifique
+        quem jogou.
       </p>
     </div>
     <div style="display:flex; gap:9px; margin-top:10px" class="nao-imprime">
@@ -1538,6 +1547,9 @@ function montarBotaoSom() {
 window.addEventListener('DOMContentLoaded', () => {
   VOZ.iniciar();
   montarBotaoSom();
+  // wi-fi de escola cai. O que não conseguiu ser enviado numa partida vai
+  // junto na próxima abertura do jogo.
+  if (typeof ESTATISTICA !== 'undefined') ESTATISTICA.escoarPendentes();
   // O iPhone só deixa falar depois de um toque de verdade na tela.
   // Este é o toque: o primeiro que a criança der, em qualquer lugar.
   const liberar = () => { VOZ.liberar(); SOM.liberar(); };
