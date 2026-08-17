@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>O Livro das Descobertas — Colégio Dom José</title>
+<meta name="description" content="Jogo educativo do Colégio Dom José: do fogo à vacina. Feira de ciências, 5º ano.">
+<meta name="theme-color" content="#16294A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Descobertas">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="palco">
+  <div id="tela" class="tela"></div>
+  <!-- nao-trava: o botão de som nunca pode ser desligado pela própria voz -->
+  <button id="bSom" class="btn-som nao-trava" aria-label="Ligar ou desligar a voz">🔊</button>
+</div>
+
+<!-- Phaser roda os tres minijogos. Se este arquivo faltar, o jogo detecta
+     e volta sozinho para a versao em HTML — nenhuma tela deixa de existir. -->
+<script src="vendor/phaser.min.js"></script>
+<script src="art.js"></script>
+<script src="som.js"></script>
+<script src="voz.js"></script>
+<script src="minijogos.js"></script>
+<script src="game.js"></script>
+<script>
+  // Service worker: faz o jogo abrir sem internet depois da primeira vez.
+  // Só funciona em site hospedado (http/https), não em arquivo local — e isso é normal.
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+</script>
+</body>
+</html>

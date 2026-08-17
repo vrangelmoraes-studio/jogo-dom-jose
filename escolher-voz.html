@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escolher a voz do Zezinho</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { overflow: auto; background: #16294A; }
+  #palco { height: auto; max-height: none; min-height: 100%; padding: 20px 16px 40px; overflow: auto; }
+  .voz-item {
+    background: #fff; border-radius: var(--r-m); padding: 14px 16px; margin-bottom: 12px;
+    box-shadow: 0 5px 0 rgba(22,41,74,.12);
+  }
+  .voz-item h3 { margin-bottom: 4px; }
+  .voz-item .desc { font-size: 14px; color: var(--texto-claro); margin-bottom: 10px; }
+  .voz-item audio { width: 100%; }
+  .rotulo-secao {
+    color: #FFD166; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+    margin: 22px 0 10px;
+  }
+  .aviso-box {
+    background: #FFF6E5; border-left: 6px solid var(--laranja);
+    border-radius: var(--r-p); padding: 12px 14px; font-size: 14.5px; line-height: 1.45;
+  }
+</style>
+</head>
+<body>
+<div id="palco">
+
+  <h2 style="color:#fff; text-align:center">Qual voz o Zezinho vai ter?</h2>
+  <p style="color:#cfe3f7; text-align:center; font-size:14.5px; margin-top:8px">
+    Todas dizem a mesma fala. Ouça e me diga o número.
+  </p>
+
+  <div class="rotulo-secao">O que temos hoje no jogo</div>
+  <div class="voz-item">
+    <h3>0 · Voz do navegador</h3>
+    <div class="desc">
+      É a que está no jogo agora. Sai de graça e sem arquivo nenhum, mas a qualidade
+      muda de aparelho para aparelho — e costuma ser a mais robótica.
+    </div>
+    <button class="btn btn-marinho btn-p" id="bNav">▶ Ouvir a voz deste aparelho</button>
+    <div id="qualNav" style="font-size:13px; color:var(--texto-claro); margin-top:8px"></div>
+  </div>
+
+  <div class="rotulo-secao">Vozes neurais (arquivo pronto no jogo)</div>
+
+  <div class="voz-item">
+    <h3>1 · Antônio, tom de arara</h3>
+    <div class="desc">Voz masculina, mais aguda e acelerada. A que mais soa "bicho falante".</div>
+    <audio controls preload="none" src="amostras-de-voz/1-antonio-arara.mp3"></audio>
+  </div>
+
+  <div class="voz-item">
+    <h3>2 · Antônio, tom natural</h3>
+    <div class="desc">Mesma voz sem alterar nada. Soa como um contador de histórias.</div>
+    <audio controls preload="none" src="amostras-de-voz/2-antonio-normal.mp3"></audio>
+  </div>
+
+  <div class="voz-item">
+    <h3>3 · Francisca, tom de arara</h3>
+    <div class="desc">Voz feminina, mais aguda e acelerada.</div>
+    <audio controls preload="none" src="amostras-de-voz/3-francisca-arara.mp3"></audio>
+  </div>
+
+  <div class="voz-item">
+    <h3>4 · Francisca, tom natural</h3>
+    <div class="desc">Voz feminina sem alteração. A mais calma das cinco.</div>
+    <audio controls preload="none" src="amostras-de-voz/4-francisca-normal.mp3"></audio>
+  </div>
+
+  <div class="voz-item">
+    <h3>5 · Thalita, tom de arara</h3>
+    <div class="desc">Terceira voz brasileira disponível, levemente aguda.</div>
+    <audio controls preload="none" src="amostras-de-voz/5-thalita-arara.mp3"></audio>
+  </div>
+
+  <div class="rotulo-secao">O que muda se trocar</div>
+  <div class="aviso-box">
+    <b>A favor:</b> a voz fica igual em todo aparelho — celular velho, tablet da escola,
+    iPhone — e é muito melhor que a do navegador.<br><br>
+    <b>Contra:</b> o jogo passa de 153 KB para uns 2 MB (ainda leve).
+    E o Zezinho <b>deixa de falar o nome da criança</b>, porque o áudio é gravado antes
+    de saber quem vai jogar. O nome continua <b>escrito</b> na tela, só não é falado.<br><br>
+    <b>Se mudarmos algum texto depois</b>, é preciso gerar o áudio daquela fala de novo —
+    eu rodo um comando e pronto. E qualquer fala sem áudio cai automaticamente na voz do
+    navegador, então o jogo nunca fica mudo.
+  </div>
+
+</div>
+
+<script>
+const FALA = "Oi! Sou o Zezinho, guardião deste livro. Sem as páginas perdidas, " +
+             "a história fica incompleta! Vamos buscar juntos? São três épocas.";
+
+function melhorVozLocal() {
+  const vs = speechSynthesis.getVoices() || [];
+  return vs.find(v => /pt[-_]BR/i.test(v.lang) && /natural|neural|google/i.test(v.name))
+      || vs.find(v => /pt[-_]BR/i.test(v.lang))
+      || vs.find(v => /^pt/i.test(v.lang)) || null;
+}
+
+function mostrarQual() {
+  const v = melhorVozLocal();
+  document.getElementById('qualNav').textContent = v
+    ? 'Este aparelho usaria: ' + v.name + ' (' + v.lang + ')'
+    : 'Este aparelho não tem nenhuma voz em português instalada.';
+}
+speechSynthesis.addEventListener('voiceschanged', mostrarQual);
+mostrarQual();
+
+document.getElementById('bNav').onclick = () => {
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(FALA);
+  const v = melhorVozLocal();
+  if (v) u.voice = v;
+  u.lang = 'pt-BR'; u.rate = .95; u.pitch = 1.2;
+  speechSynthesis.speak(u);
+};
+</script>
+</body>
+</html>

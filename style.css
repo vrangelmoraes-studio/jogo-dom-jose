@@ -1,0 +1,631 @@
+/* ==========================================================================
+   O Livro das Descobertas — Colégio Dom José
+   Estilo visual: PK XD (formas redondas, cor saturada, botão com volume)
+   Paleta tirada da identidade real do colégio.
+   ========================================================================== */
+
+:root {
+  /* --- marca Dom José --- */
+  --laranja:      #F5921E;
+  --laranja-esc:  #C97210;
+  --azul:         #1B9BF0;
+  --azul-esc:     #0B6FB8;
+  --turquesa:     #29B6CE;   /* camiseta do uniforme */
+  --turquesa-esc: #1B8A9E;
+  --marinho:      #16294A;   /* calça do uniforme */
+  --marinho-clr:  #24406E;
+
+  /* --- apoio --- */
+  --amarelo:      #FFC61E;
+  --amarelo-esc:  #D69B00;
+  --verde:        #4CC46A;
+  --verde-esc:    #2E9147;
+  --vermelho:     #F0524B;
+  --vermelho-esc: #C0332D;
+  --roxo:         #8A6BE0;
+  --creme:        #FFF6E5;
+  --branco:       #FFFFFF;
+  --texto:        #22304A;
+  --texto-claro:  #5B6B85;
+
+  /* --- forma --- */
+  --r-g: 34px;   /* raio grande  */
+  --r-m: 22px;   /* raio médio   */
+  --r-p: 14px;   /* raio pequeno */
+  --volume: 0 6px 0;                 /* o "degrau" 3D do botão   */
+  --sombra: 0 10px 26px rgba(22, 41, 74, .18);
+
+  --fonte: 'Comic Sans MS', 'Chalkboard SE', 'Trebuchet MS', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0; padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--fonte);
+  color: var(--texto);
+  background: var(--marinho);
+  user-select: none; -webkit-user-select: none;
+  overscroll-behavior: none;
+}
+
+/* ---------- palco ---------------------------------------------------------
+   O jogo vive num retângulo de proporção fixa que se encaixa em qualquer
+   tela. Nada de rolagem: criança não deve precisar arrastar a página.       */
+#palco {
+  position: relative;
+  width: 100%; max-width: 460px;
+  height: 100%; max-height: 900px;
+  margin: 0 auto;
+  background: var(--creme);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+}
+@media (min-width: 480px) and (min-height: 920px) {
+  #palco { border-radius: 28px; margin-top: 10px; height: calc(100% - 20px); }
+}
+
+/* ---------- telas -------------------------------------------------------- */
+.tela {
+  position: absolute; inset: 0;
+  display: none;
+  flex-direction: column;
+  padding: 18px 18px 22px;
+  opacity: 0;
+  transition: opacity .28s ease;
+}
+.tela.ativa   { display: flex; opacity: 1; }
+.tela.entrando{ opacity: 0; }
+
+/* fundos por época ------------------------------------------------------- */
+.fundo-escola   { background: linear-gradient(180deg,#8FD8F5 0%,#C9EEFB 55%,#F6E7C8 100%); }
+.fundo-livro    { background: linear-gradient(180deg,#241a3d 0%,#472f6b 60%,#7a4fa8 100%); }
+.fundo-pre      { background: linear-gradient(180deg,#4A3B6B 0%,#A66A55 55%,#D9A15E 100%); }
+.fundo-fazenda  { background: linear-gradient(180deg,#9BD9F2 0%,#CFEFC0 55%,#8FCB6E 100%); }
+.fundo-lab      { background: linear-gradient(180deg,#2E3F63 0%,#4E6A99 60%,#8FA9C9 100%); }
+.fundo-sala     { background: linear-gradient(180deg,#BFE6F7 0%,#E8F6FD 55%,#F2E2C4 100%); }
+.fundo-festa    { background: linear-gradient(180deg,#FFD166 0%,#FF9F43 50%,#F5921E 100%); }
+.fundo-corpo    { background: radial-gradient(circle at 50% 60%,#FFC1BC 0%,#E8736B 70%,#B33F38 100%); }
+
+/* ---------- tipografia --------------------------------------------------- */
+h1, h2, h3 { margin: 0; line-height: 1.15; }
+h1 { font-size: 30px; }
+h2 { font-size: 23px; }
+h3 { font-size: 18px; }
+p  { margin: 0; line-height: 1.45; font-size: 16px; }
+
+.titulo-jogo {
+  text-align: center;
+  color: var(--branco);
+  font-size: 30px;
+  text-shadow: 0 3px 0 var(--laranja-esc), 0 7px 14px rgba(0,0,0,.3);
+  letter-spacing: .5px;
+}
+.subtitulo-jogo {
+  text-align: center; color: var(--branco);
+  font-size: 15px; opacity: .95;
+  text-shadow: 0 2px 6px rgba(0,0,0,.35);
+}
+.rotulo { font-size: 13px; color: var(--texto-claro); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ---------- botões ------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; cursor: pointer;
+  font-family: var(--fonte); font-size: 20px; font-weight: bold;
+  color: var(--branco);
+  padding: 15px 26px;
+  border-radius: var(--r-m);
+  background: var(--azul);
+  box-shadow: var(--volume) var(--azul-esc);
+  transform: translateY(0);
+  transition: transform .07s, box-shadow .07s, filter .15s;
+  text-align: center;
+}
+.btn:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--azul-esc); }
+.btn:disabled { filter: grayscale(.6) opacity(.55); cursor: default; }
+
+.btn-laranja   { background: var(--laranja);  box-shadow: var(--volume) var(--laranja-esc); }
+.btn-laranja:active { box-shadow: 0 1px 0 var(--laranja-esc); }
+.btn-verde     { background: var(--verde);    box-shadow: var(--volume) var(--verde-esc); }
+.btn-verde:active   { box-shadow: 0 1px 0 var(--verde-esc); }
+.btn-turquesa  { background: var(--turquesa); box-shadow: var(--volume) var(--turquesa-esc); }
+.btn-turquesa:active{ box-shadow: 0 1px 0 var(--turquesa-esc); }
+.btn-marinho   { background: var(--marinho-clr); box-shadow: var(--volume) var(--marinho); }
+.btn-marinho:active { box-shadow: 0 1px 0 var(--marinho); }
+
+.btn-g { font-size: 24px; padding: 18px 34px; width: 100%; }
+.btn-p { font-size: 15px; padding: 10px 16px; border-radius: var(--r-p); }
+
+/* ---------- cartão ------------------------------------------------------- */
+.cartao {
+  background: var(--branco);
+  border-radius: var(--r-g);
+  padding: 20px;
+  box-shadow: 0 8px 0 rgba(22,41,74,.10), var(--sombra);
+}
+.cartao-creme { background: var(--creme); }
+
+/* ---------- fala do Zezinho ---------------------------------------------- */
+.fala {
+  display: flex; align-items: flex-end; gap: 8px;
+  margin-top: auto;
+}
+.fala .bolha {
+  position: relative; flex: 1;
+  background: var(--branco);
+  border-radius: var(--r-m);
+  padding: 14px 16px;
+  font-size: 16px; line-height: 1.4;
+  box-shadow: 0 6px 0 rgba(22,41,74,.10), var(--sombra);
+  min-height: 62px;
+}
+.fala .bolha::after {
+  content: ''; position: absolute; left: -9px; bottom: 20px;
+  border: 10px solid transparent; border-right-color: var(--branco); border-left: 0;
+}
+.fala .bolha b { color: var(--laranja-esc); }
+.fala .zezinho { width: 84px; flex: 0 0 84px; }
+.fala.espelhada { flex-direction: row-reverse; }
+.fala.espelhada .bolha::after {
+  left: auto; right: -9px;
+  border-right-color: transparent; border-left: 10px solid var(--branco); border-right: 0;
+}
+
+/* Zezinho flutuando de leve — dá vida sem custar nada */
+.flutua  { animation: flutuar 2.6s ease-in-out infinite; }
+.flutua2 { animation: flutuar 3.1s ease-in-out infinite .4s; }
+@keyframes flutuar { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+
+.pulsa { animation: pulsar 1.5s ease-in-out infinite; }
+@keyframes pulsar { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+
+.tremer { animation: tremer .4s ease-in-out; }
+@keyframes tremer {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)}
+  40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+}
+
+.aparece { animation: aparecer .35s ease-out both; }
+@keyframes aparecer { from{opacity:0; transform:translateY(14px) scale(.96)} to{opacity:1; transform:none} }
+
+/* ---------- barra de topo (fase / páginas) ------------------------------- */
+.topo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.chip {
+  background: rgba(255,255,255,.92);
+  border-radius: 999px; padding: 7px 14px;
+  font-size: 14px; font-weight: bold; color: var(--marinho);
+  box-shadow: 0 3px 0 rgba(22,41,74,.12);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.chip-paginas { margin-left: auto; }
+
+/* ---------- área de jogo ------------------------------------------------- */
+.cena {
+  position: relative; flex: 1;
+  border-radius: var(--r-g);
+  overflow: hidden;
+  min-height: 0;
+}
+.cena-borda { border: 4px solid rgba(255,255,255,.5); }
+
+/* item tocável genérico */
+.alvo {
+  position: absolute;
+  cursor: pointer;
+  transition: transform .12s, opacity .3s;
+}
+.alvo:active { transform: scale(.9); }
+.alvo.coletado { opacity: 0; transform: scale(1.5); pointer-events: none; }
+
+/* página perdida do livro — brilha discretamente */
+.pagina-perdida { animation: brilhar 1.9s ease-in-out infinite; }
+@keyframes brilhar {
+  0%,100%{ filter: drop-shadow(0 0 3px rgba(255,255,255,.7)) }
+  50%    { filter: drop-shadow(0 0 12px rgba(255,214,90,1)) }
+}
+
+/* ---------- barra de progresso ------------------------------------------- */
+.barra {
+  height: 22px; border-radius: 999px;
+  background: rgba(255,255,255,.55);
+  overflow: hidden;
+  box-shadow: inset 0 2px 5px rgba(22,41,74,.18);
+}
+.barra > i {
+  display: block; height: 100%; width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--amarelo), var(--laranja));
+  transition: width .18s ease-out;
+}
+
+/* ---------- grade de opções (quiz, escolhas) ---------------------------- */
+.opcoes { display: flex; flex-direction: column; gap: 11px; }
+.opcao {
+  width: 100%; text-align: left;
+  font-family: var(--fonte); font-size: 16.5px; line-height: 1.35;
+  color: var(--texto);
+  background: var(--branco);
+  border: 3px solid transparent;
+  border-radius: var(--r-m);
+  padding: 14px 16px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 rgba(22,41,74,.12);
+  transition: transform .08s, box-shadow .08s, background .2s, border-color .2s;
+}
+.opcao:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(22,41,74,.12); }
+.opcao.certa  { background: #E4F8E9; border-color: var(--verde);    }
+.opcao.errada { background: #FDE7E6; border-color: var(--vermelho); }
+.opcao:disabled { cursor: default; }
+.opcao .marca { float: right; font-size: 20px; margin-left: 8px; }
+
+/* ---------- seleção de personagem --------------------------------------- */
+.escolha-avatar { display: flex; gap: 14px; justify-content: center; }
+.card-avatar {
+  flex: 1; background: var(--branco);
+  border: 4px solid transparent; border-radius: var(--r-g);
+  padding: 12px 8px; cursor: pointer;
+  box-shadow: 0 6px 0 rgba(22,41,74,.12);
+  text-align: center; font-family: var(--fonte); font-size: 17px; font-weight: bold;
+  color: var(--texto);
+  transition: transform .12s, border-color .2s;
+}
+.card-avatar.sel { border-color: var(--laranja); transform: translateY(-4px); }
+.card-avatar svg { width: 100%; height: auto; max-height: 170px; }
+
+.tons { display: flex; gap: 10px; justify-content: center; margin-top: 4px; }
+.tom {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 4px solid rgba(255,255,255,.9); cursor: pointer;
+  box-shadow: 0 3px 0 rgba(22,41,74,.18);
+}
+.tom.sel { border-color: var(--marinho); transform: scale(1.12); }
+
+/* ---------- campo de texto ---------------------------------------------- */
+.campo {
+  width: 100%;
+  font-family: var(--fonte); font-size: 26px; text-align: center;
+  color: var(--marinho);
+  padding: 14px; border: 4px solid var(--turquesa);
+  border-radius: var(--r-m); background: var(--branco);
+  outline: none;
+}
+.campo:focus { border-color: var(--laranja); }
+.aviso { min-height: 22px; font-size: 14.5px; color: var(--vermelho-esc); text-align: center; }
+
+/* ---------- narrativa (sala de leitura) --------------------------------- */
+.narrativa {
+  display: flex; flex-direction: column; height: 100%;
+  cursor: pointer;
+}
+.toque-continuar {
+  text-align: center; font-size: 14px; color: rgba(255,255,255,.9);
+  margin-top: 8px; animation: piscar 1.6s ease-in-out infinite;
+}
+@keyframes piscar { 0%,100%{opacity:.45} 50%{opacity:1} }
+
+/* ---------- medalha / final --------------------------------------------- */
+.medalha { display: block; margin: 0 auto; width: 140px; }
+.linha-resumo {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 2px dashed rgba(22,41,74,.14);
+  font-size: 16px;
+}
+.linha-resumo:last-child { border-bottom: none; }
+.linha-resumo b { color: var(--laranja-esc); font-size: 18px; }
+
+.carta-sabia {
+  background: var(--creme); border-left: 6px solid var(--amarelo);
+  border-radius: var(--r-p); padding: 12px 14px; margin-bottom: 10px;
+  font-size: 15px; line-height: 1.4;
+}
+.carta-sabia b { color: var(--laranja-esc); }
+
+/* ---------- rolagem só onde é inevitável -------------------------------- */
+.rolavel { overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; flex: 1; }
+.rolavel::-webkit-scrollbar { width: 8px; }
+.rolavel::-webkit-scrollbar-thumb { background: rgba(22,41,74,.22); border-radius: 4px; }
+
+/* ---------- confete ----------------------------------------------------- */
+.confete {
+  position: absolute; width: 11px; height: 11px; border-radius: 3px;
+  pointer-events: none; animation: cair linear forwards;
+}
+@keyframes cair {
+  from { transform: translateY(-40px) rotate(0deg);   opacity: 1 }
+  to   { transform: translateY(760px) rotate(720deg); opacity: 0 }
+}
+
+/* ---------- "+1" que sobe ao acertar ------------------------------------ */
+.ganho {
+  position: absolute; pointer-events: none;
+  font-size: 22px; font-weight: bold; color: var(--branco);
+  text-shadow: 0 2px 5px rgba(0,0,0,.4);
+  animation: subir .9s ease-out forwards;
+}
+@keyframes subir {
+  from { transform: translateY(0)     scale(.7); opacity: 1 }
+  to   { transform: translateY(-70px) scale(1.2); opacity: 0 }
+}
+
+/* ---------- modo professor ---------------------------------------------- */
+.tabela-prof { width: 100%; border-collapse: collapse; font-size: 15px; }
+.tabela-prof th, .tabela-prof td {
+  text-align: left; padding: 8px 6px; border-bottom: 1px solid rgba(22,41,74,.15);
+}
+.tabela-prof th { color: var(--texto-claro); font-size: 13px; text-transform: uppercase; }
+
+@media print {
+  body, #palco { background: #fff; height: auto; overflow: visible; }
+  #palco { max-width: none; box-shadow: none; }
+  .tela { position: static; opacity: 1 !important; display: none; }
+  .tela.ativa { display: block; }
+  .nao-imprime { display: none !important; }
+}
+
+/* ---------- telas muito baixas ------------------------------------------ */
+@media (max-height: 640px) {
+  .titulo-jogo { font-size: 25px; }
+  .btn-g { font-size: 20px; padding: 14px 24px; }
+  p, .opcao { font-size: 15px; }
+  .fala .zezinho { width: 66px; flex: 0 0 66px; }
+}
+
+
+/* ==========================================================================
+   VOZ E ANIMAÇÃO
+   Acrescentado depois do teste com crianças: elas saíam pulando o texto.
+   A voz resolve a atenção; o bico mexendo resolve para ONDE ela olha.
+   ========================================================================== */
+
+/* ---------- palavras acendendo no ritmo da fala ----------
+   Uso opacidade, e não display, de propósito: a bolha já nasce com o
+   tamanho final e não fica pulando de altura enquanto o texto aparece. */
+.pal { opacity: .10; transition: opacity .22s ease; }
+.pal.on { opacity: 1; }
+
+/* ---------- barrinha de quanto falta da fala ----------
+   Esperar sem prazo à vista é o que faz criança largar o aparelho. */
+.barra-fala {
+  position: absolute; left: 14px; right: 14px; bottom: 7px;
+  height: 5px; border-radius: 999px;
+  background: rgba(22,41,74,.13);
+  overflow: hidden;
+}
+.barra-fala > i {
+  display: block; height: 100%; width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--amarelo), var(--laranja));
+}
+.fala .bolha { padding-bottom: 18px; }
+
+/* dá para tocar na bolha e ouvir de novo */
+[data-falar].ja-falado { cursor: pointer; }
+.fala .bolha.ja-falado::before {
+  content: '🔁';
+  position: absolute; right: 10px; top: 7px;
+  font-size: 12px; opacity: .35;
+}
+
+/* narrativa: enquanto fala, não deixa avançar */
+.narrativa .cartao { position: relative; padding-bottom: 20px; }
+#nrt.travado { pointer-events: none; }
+#nrt.travado .toque-continuar { visibility: hidden; }
+
+/* botão travado pela voz: some sem parecer quebrado */
+.btn[data-travado-pela-voz] {
+  filter: grayscale(.5) opacity(.45);
+  transform: none !important;
+}
+
+/* ---------- Zezinho falando ----------
+   transform-box: fill-box faz a origem valer sobre a caixa da própria
+   peça, então "50% 0%" é o alto do bico em qualquer tamanho de tela.   */
+.zz-bico, .zz-asa, .zz-cabeca { transform-box: fill-box; }
+.zz-bico   { transform-origin: 50% 2%;   }
+.zz-asa    { transform-origin: 4% 18%;   }
+.zz-cabeca { transform-origin: 50% 96%;  }
+
+.zezinho.falando .zz-bico   { animation: bicar .26s ease-in-out infinite; }
+.zezinho.falando .zz-asa    { animation: gesticular .62s ease-in-out infinite; }
+.zezinho.falando .zz-cabeca { animation: cabecear .78s ease-in-out infinite; }
+
+@keyframes bicar      { 0%,100% { transform: scaleY(1);    }
+                        50%     { transform: scaleY(1.55); } }
+@keyframes gesticular { 0%,100% { transform: rotate(0deg);  }
+                        50%     { transform: rotate(-13deg);} }
+@keyframes cabecear   { 0%,100% { transform: rotate(-2.5deg);}
+                        50%     { transform: rotate(2.5deg); } }
+
+/* enquanto fala, ele para de flutuar — senão vira agitação demais */
+.zezinho.falando.flutua, .zezinho.falando.flutua2 { animation: none; }
+
+/* ---------- botão de som ---------- */
+.btn-som {
+  position: absolute; top: 10px; right: 10px; z-index: 60;
+  width: 42px; height: 42px; border-radius: 50%;
+  border: none; cursor: pointer;
+  font-size: 19px; line-height: 1;
+  background: rgba(255,255,255,.88);
+  color: var(--marinho);
+  box-shadow: 0 3px 0 rgba(22,41,74,.18);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .08s;
+}
+.btn-som:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(22,41,74,.18); }
+.btn-som.mudo { background: rgba(255,255,255,.55); filter: grayscale(1); }
+/* a barra de topo não pode passar por baixo do botão de som */
+.topo { padding-right: 48px; }
+
+/* ---------- troca de tela deslizando ----------
+   Precisa vir DEPOIS de .tela.ativa: mesma especificidade, ganha quem
+   está por último.                                                     */
+.tela { transition: opacity .26s ease, transform .26s ease; }
+.tela.ativa.saindo   { opacity: 0; transform: translateX(-30px); }
+.tela.ativa.entrando { opacity: 0; transform: translateX(30px);  }
+
+/* ---------- cenários vivos ---------- */
+.lingua-fogo {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  animation: tremeluzir .42s ease-in-out infinite alternate;
+}
+.lingua-fogo-2 { animation-duration: .33s; animation-delay: .09s; }
+.lingua-fogo-3 { animation-duration: .27s; animation-delay: .04s; }
+@keyframes tremeluzir {
+  from { transform: scale(1)         skewX(0deg);   }
+  to   { transform: scale(1.1, 1.18) skewX(-5deg);  }
+}
+
+.corpo-germe {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: rastejar 1.5s ease-in-out infinite;
+}
+.cilios-germe {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: girar 5s linear infinite;
+}
+@keyframes rastejar { 0%,100% { transform: scale(1, 1);      }
+                      50%     { transform: scale(1.14, .88); } }
+@keyframes girar    { to { transform: rotate(360deg); } }
+
+.bolha-caldo { animation: subir-bolha 2.1s ease-in-out infinite; }
+.bolha-caldo.b2 { animation-duration: 1.6s; animation-delay: .3s; }
+.bolha-caldo.b3 { animation-duration: 2.5s; animation-delay: .7s; }
+.bolha-caldo.b4 { animation-duration: 1.9s; animation-delay: 1.1s; }
+.bolha-caldo.b5 { animation-duration: 2.3s; animation-delay: .5s; }
+@keyframes subir-bolha {
+  0%, 100% { transform: translateY(0);    opacity: .9; }
+  50%      { transform: translateY(-7px); opacity: .5; }
+}
+
+.vapor { opacity: 0; animation: vaporizar 2.2s ease-out infinite; }
+.vapor.v2 { animation-delay: .7s; }
+.vapor.v3 { animation-delay: 1.4s; }
+@keyframes vaporizar {
+  0%   { opacity: 0;   transform: translateY(6px)   scale(.7); }
+  35%  { opacity: .8;  }
+  100% { opacity: 0;   transform: translateY(-16px) scale(1.3); }
+}
+
+/* respeita quem pediu menos movimento no sistema */
+@media (prefers-reduced-motion: reduce) {
+  .lingua-fogo, .corpo-germe, .cilios-germe, .bolha-caldo, .vapor,
+  .flutua, .flutua2, .pulsa { animation: none !important; }
+  .tela { transition: opacity .2s ease; }
+  .tela.ativa.saindo, .tela.ativa.entrando { transform: none; }
+}
+
+
+/* ==========================================================================
+   ANIMAÇÃO DAS TELAS DE HTML
+   O Phaser cuida do movimento dentro dos minijogos. Aqui é o resto: a
+   entrada dos cartões, o toque nos botões e os avisos de progresso.
+   ========================================================================== */
+
+/* ---------- entrada em cascata ----------
+   Os cartões e as opções entram um atrás do outro, num intervalo curto.
+   Dá sensação de "a tela se montou" em vez de "a tela apareceu". */
+.tela.ativa .cartao,
+.tela.ativa .opcao,
+.tela.ativa .card-avatar {
+  animation: entrar-cartao .34s cubic-bezier(.2, .9, .3, 1.2) both;
+}
+.tela.ativa .cartao:nth-of-type(1),  .tela.ativa .opcao:nth-of-type(1) { animation-delay: .02s }
+.tela.ativa .cartao:nth-of-type(2),  .tela.ativa .opcao:nth-of-type(2) { animation-delay: .08s }
+.tela.ativa .cartao:nth-of-type(3),  .tela.ativa .opcao:nth-of-type(3) { animation-delay: .14s }
+.tela.ativa .cartao:nth-of-type(4),  .tela.ativa .opcao:nth-of-type(4) { animation-delay: .20s }
+@keyframes entrar-cartao {
+  from { opacity: 0; transform: translateY(16px) scale(.97) }
+  to   { opacity: 1; transform: none }
+}
+
+/* a bolha de fala entra pelo lado do Zezinho, como se ele tivesse falado */
+.tela.ativa .fala .bolha {
+  animation: entrar-bolha .3s cubic-bezier(.2, .9, .3, 1.3) both;
+  transform-origin: 0 80%;
+}
+.fala.espelhada .bolha { transform-origin: 100% 80% }
+@keyframes entrar-bolha {
+  from { opacity: 0; transform: scale(.7) }
+  to   { opacity: 1; transform: scale(1) }
+}
+
+/* ---------- botão afundando ----------
+   O :active do CSS já baixava o botão. Aqui ele volta com uma molinha,
+   que é o que faz o toque "responder" na mão da criança. */
+.btn { transition: transform .12s cubic-bezier(.2, .9, .3, 1.6), box-shadow .08s, filter .15s }
+
+/* ---------- contador de páginas dando um pulo ---------- */
+.chip-pop { animation: pular-chip .5s cubic-bezier(.2, .9, .3, 1.5) }
+@keyframes pular-chip {
+  0%   { transform: scale(1) }
+  35%  { transform: scale(1.28) rotate(-4deg); background: var(--amarelo) }
+  100% { transform: scale(1) }
+}
+
+/* ---------- barra de progresso com brilho correndo ---------- */
+.barra > i { position: relative; overflow: hidden }
+.barra > i::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 20%,
+              rgba(255,255,255,.55) 50%, transparent 80%);
+  animation: correr-brilho 1.6s linear infinite;
+}
+@keyframes correr-brilho { from { transform: translateX(-100%) } to { transform: translateX(100%) } }
+
+/* ---------- medalha do final entrando ---------- */
+.medalha { animation: entrar-medalha .8s cubic-bezier(.2, .9, .3, 1.3) both; }
+@keyframes entrar-medalha {
+  from { opacity: 0; transform: scale(.3) rotate(-25deg) }
+  60%  { opacity: 1; transform: scale(1.08) rotate(6deg) }
+  to   { opacity: 1; transform: none }
+}
+
+/* ---------- resposta certa / errada ---------- */
+.opcao.certa  { animation: acertou .45s ease-out }
+.opcao.errada { animation: tremer .4s ease-in-out }
+@keyframes acertou {
+  0%   { transform: scale(1) }
+  40%  { transform: scale(1.03); box-shadow: 0 0 0 6px rgba(76,196,106,.25) }
+  100% { transform: scale(1); box-shadow: 0 5px 0 rgba(22,41,74,.12) }
+}
+
+/* ---------- cena do minijogo respirando ---------- */
+.cena canvas { display: block; border-radius: calc(var(--r-g) - 4px) }
+
+@media (prefers-reduced-motion: reduce) {
+  .tela.ativa .cartao, .tela.ativa .opcao, .tela.ativa .card-avatar,
+  .tela.ativa .fala .bolha, .medalha, .chip-pop,
+  .opcao.certa, .opcao.errada { animation: none !important }
+  .barra > i::after { display: none }
+}
+
+
+/* ---------- logo do colégio ----------
+   O SVG do logo não tem largura própria, então ele esticava até a borda da
+   tela: ficava gigante e passava POR BAIXO do botão de som, que mora no
+   canto superior direito. Aqui ele ganha um tamanho de gente e uma folga à
+   direita do tamanho do botão. */
+.faixa-logo {
+  display: flex;
+  justify-content: center;
+  padding-right: 46px;      /* a folga do botão de som */
+  margin-bottom: 2px;
+}
+.logo-topo {
+  width: 100%;
+  max-width: 218px;
+  height: auto;
+}
+/* na tela do professor não existe botão de som para desviar */
+.fundo-sala .faixa-logo { padding-right: 0; }
+@media print { .faixa-logo { padding-right: 0; } }
+
+@media (max-height: 640px) {
+  .logo-topo { max-width: 180px; }
+}

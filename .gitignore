@@ -1,0 +1,13 @@
+# lixo do Windows e do OneDrive
+Thumbs.db
+desktop.ini
+*.tmp
+~$*
+
+# editores
+.vscode/
+.idea/
+
+# testes e capturas locais
+tiros/
+*.log
