@@ -69,7 +69,12 @@ html, body {
 
 /* ---------- telas -------------------------------------------------------- */
 .tela {
-  position: absolute; inset: 0;
+  /* top/right/bottom/left ANTES do inset: iPad e Android antigos (Safari
+     abaixo de 14.1, Chrome abaixo de 87) nao entendem  e a tela
+     ficaria sem tamanho nenhum — o jogo simplesmente nao apareceria. */
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  inset: 0;
   display: none;
   flex-direction: column;
   padding: 18px 18px 22px;

@@ -24,6 +24,61 @@ Para parar o servidor, aperte `Ctrl + C` na janela do PowerShell.
 
 ---
 
+## O jogo está no ar
+
+**https://vrangelmoraes-studio.github.io/jogo-dom-jose/**
+
+É esse endereço que vai no QR code. Ele não muda.
+
+### O QR code e o cartaz
+
+Já estão prontos na pasta `qr-code/`:
+
+| Arquivo | Para quê |
+|---|---|
+| `cartaz.pdf` | **O que você imprime.** A4, pronto, com logo, Zezinho, QR e o endereço escrito. |
+| `cartaz.png` | O mesmo cartaz como imagem, para colar em slide ou mandar por WhatsApp. |
+| `qrcode.svg` | Só o código, em vetor. É o que a gráfica prefere — não perde nitidez em nenhum tamanho. |
+| `qrcode.png` | Só o código, como imagem. Serve para Word e PowerPoint. |
+| `cartaz.html` | A fonte do cartaz, caso queira mudar um texto. |
+
+Para refazer (se o endereço mudar, por exemplo): `python -X utf8 gerar_qrcode.py`
+
+Duas coisas que fazem um QR não funcionar e que **erram calado** — o código parece
+perfeito e a câmera simplesmente não engata. Estão resolvidas, mas anote caso mexa nele:
+
+1. **Margem branca de 4 módulos** em volta. É o mínimo da especificação.
+2. **`viewBox` no SVG.** Sem ele, mudar o tamanho pelo CSS não redimensiona: **recorta**.
+   O primeiro cartaz saiu com o código cortado, parecendo inteiro a olho nu.
+
+O código usa correção de erro **nível H**: continua legível com até 30% da área suja,
+amassada ou coberta. Numa feira, o cartaz vai passar por muita mão.
+
+---
+
+## Em quais navegadores funciona
+
+Testado rodando o jogo nos três motores que existem, e nos dois perfis de celular:
+
+| Onde | Resultado |
+|---|---|
+| **Chromium** (Chrome, Edge, Samsung Internet, Opera) | tela, Phaser, som e toque — tudo |
+| **WebKit** (Safari do iPhone e do iPad) | tela, Phaser e toque — tudo |
+| **Firefox** | tela, Phaser e toque — tudo |
+| **iPhone 13** (Safari, toque real) | tudo, com toque de dedo |
+| **Galaxy S9+** (Chrome Android) | tudo |
+
+Zero erro de JavaScript em todos.
+
+**No iPhone, "Adicionar à tela inicial" só funciona pelo Safari** — o Chrome do iPhone não
+instala site como aplicativo. Pelo QR code abre normalmente em qualquer um; só a instalação
+com ícone próprio é exclusiva do Safari.
+
+**O som só começa depois do primeiro toque na tela.** É regra de todo navegador de celular,
+não é defeito: o jogo destrava o áudio quando a criança toca em JOGAR.
+
+---
+
 ## Como colocar no ar para a feira (grátis)
 
 O jogo é só um punhado de arquivos soltos — qualquer hospedagem de site estático serve.
