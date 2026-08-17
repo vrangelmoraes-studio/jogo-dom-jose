@@ -1,36 +1,6 @@
-/* ==========================================================================
-   Código da planilha — O Livro das Descobertas
-
-   Este arquivo NÃO faz parte do jogo. Ele vive dentro da sua planilha do
-   Google e é quem recebe os números de cada partida.
-
-   COMO INSTALAR (uma vez só, uns 3 minutos):
-
-     1. Abra https://sheets.new  e dê um nome à planilha,
-        por exemplo "Feira de Ciências — partidas".
-
-     2. No menu:  Extensões → Apps Script
-
-     3. Apague o que estiver lá, cole TODO o conteúdo deste arquivo e salve
-        (o ícone de disquete).
-
-     4. Clique em  Implantar → Nova implantação
-          - no ícone de engrenagem, escolha  Aplicativo da Web
-          - Executar como:      Eu
-          - Quem pode acessar:  QUALQUER PESSOA        <-- isto é essencial
-          - Implantar
-
-     5. O Google vai pedir autorização. Ele mostra um aviso de "app não
-        verificado" — é normal, o app é seu. Clique em "Avançado" e depois
-        em "Acessar (não seguro)". Você está autorizando o seu próprio
-        código a escrever na sua própria planilha.
-
-     6. Copie o endereço que termina em  /exec  e me mande.
-        Eu ligo o jogo a ele.
-
-   DEPOIS DE PRONTO, para ver os números: abra o mesmo endereço no
-   navegador. Ele mostra um resumo da turma.
-   ========================================================================== */
+// O Livro das Descobertas — recebe as partidas na planilha.
+// Como instalar: veja o arquivo COMO-INSTALAR.md, nesta mesma pasta.
+// Cole este arquivo INTEIRO no Apps Script (Ctrl+A e Ctrl+C aqui dentro).
 
 var ABA = 'partidas';
 
@@ -58,19 +28,19 @@ function responder(obj) {
 }
 
 
-/* Recebe uma partida do jogo. */
+// Recebe uma partida do jogo e escreve uma linha na planilha.
 function doPost(e) {
   var trava = LockService.getScriptLock();
   try {
-    // Numa feira várias crianças terminam ao mesmo tempo. Sem esta trava,
-    // duas gravações simultâneas podem cair na mesma linha.
+    // Numa feira varias criancas terminam ao mesmo tempo. Sem esta trava,
+    // duas gravacoes simultaneas podem cair na mesma linha.
     trava.waitLock(20000);
 
     var d = JSON.parse(e.postData.contents);
     var sh = pegarAba();
 
-    // Não conta a mesma partida duas vezes. O jogo reenvia o que ficou
-    // preso quando a rede caiu, então repetição é esperada.
+    // Nao conta a mesma partida duas vezes. O jogo reenvia o que ficou
+    // preso quando a rede caiu, entao repeticao e esperada.
     var ja = sh.getLastRow() > 1
       ? sh.getRange(2, 2, sh.getLastRow() - 1, 2).getValues()
       : [];
@@ -82,11 +52,17 @@ function doPost(e) {
 
     sh.appendRow([
       d.quando || new Date().toISOString(),
-      d.partida || '', d.evento || '', d.fase || 0,
-      d.acertos || 0, d.total || 0, d.porcento || 0,
-      d.paginas || 0, d.minutos || 0, d.medalha || '',
-      "'" + (d.gabarito || '')      // apóstrofo: guarda como texto, senão
-                                    // "0110" viraria o número 110
+      d.partida || '',
+      d.evento || '',
+      d.fase || 0,
+      d.acertos || 0,
+      d.total || 0,
+      d.porcento || 0,
+      d.paginas || 0,
+      d.minutos || 0,
+      d.medalha || '',
+      // o apostrofo guarda como texto: sem ele, "0110" viraria o numero 110
+      "'" + (d.gabarito || '')
     ]);
     return responder({ ok: true });
 
@@ -98,11 +74,11 @@ function doPost(e) {
 }
 
 
-/* Abrir o endereço no navegador mostra o resumo da turma. */
+// Abrir este endereco no navegador mostra o resumo da turma.
 function doGet() {
   var sh = pegarAba();
   if (sh.getLastRow() < 2) {
-    return HtmlService.createHtmlOutput(pagina('Ainda ninguém jogou.', ''));
+    return HtmlService.createHtmlOutput(pagina('Ainda ninguem jogou.', ''));
   }
   var v = sh.getRange(2, 1, sh.getLastRow() - 1, COLUNAS.length).getValues();
 
@@ -111,27 +87,27 @@ function doGet() {
   for (var i = 0; i < v.length; i++) {
     var ev = v[i][2];
     if (ev === 'comecou') { comecaram++; continue; }
-    if (ev !== 'terminou') continue;
+    if (ev !== 'terminou') { continue; }
     terminaram++;
-    somaPc  += Number(v[i][6]) || 0;
+    somaPc += Number(v[i][6]) || 0;
     somaMin += Number(v[i][8]) || 0;
     somaPag += Number(v[i][7]) || 0;
     var g = String(v[i][10] || '').replace(/^'/, '');
     for (var j = 0; j < g.length; j++) {
-      porPergunta[j] = porPergunta[j] || { certos: 0, total: 0 };
+      if (!porPergunta[j]) { porPergunta[j] = { certos: 0, total: 0 }; }
       porPergunta[j].total++;
-      if (g.charAt(j) === '1') porPergunta[j].certos++;
+      if (g.charAt(j) === '1') { porPergunta[j].certos++; }
     }
   }
 
   var n = Math.max(1, terminaram);
   var linhas =
-      linha('Partidas começadas', comecaram) +
+      linha('Partidas comecadas', comecaram) +
       linha('Partidas terminadas', terminaram) +
-      linha('Chegaram ao fim', comecaram ? Math.round(terminaram / comecaram * 100) + '%' : '—') +
-      linha('Acerto médio', Math.round(somaPc / n) + '%') +
-      linha('Páginas achadas (média)', (somaPag / n).toFixed(1) + ' de 9') +
-      linha('Tempo médio', Math.round(somaMin / n) + ' min');
+      linha('Chegaram ao fim', comecaram ? Math.round(terminaram / comecaram * 100) + '%' : '-') +
+      linha('Acerto medio', Math.round(somaPc / n) + '%') +
+      linha('Paginas achadas (media)', (somaPag / n).toFixed(1) + ' de 9') +
+      linha('Tempo medio', Math.round(somaMin / n) + ' min');
 
   var perg = '';
   for (var k = 0; k < porPergunta.length; k++) {
@@ -143,9 +119,11 @@ function doGet() {
   return HtmlService.createHtmlOutput(pagina(linhas, perg));
 }
 
+
 function linha(rot, val) {
   return '<tr><td>' + rot + '</td><td><b>' + val + '</b></td></tr>';
 }
+
 
 function pagina(corpo, perguntas) {
   return '<!DOCTYPE html><html><head><meta charset="utf-8">' +
@@ -163,10 +141,10 @@ function pagina(corpo, perguntas) {
     'small{color:#7A6A4A;display:block;margin-top:22px;line-height:1.5}' +
     '</style></head><body>' +
     '<h1>O Livro das Descobertas</h1>' +
-    '<p class="s">Resultados da turma — Feira de Ciências, Colégio Dom José</p>' +
+    '<p class="s">Resultados da turma - Feira de Ciencias, Colegio Dom Jose</p>' +
     '<table>' + corpo + '</table>' +
     (perguntas ? '<h2>Acerto por pergunta</h2><table>' + perguntas + '</table>' : '') +
-    '<small>Nenhum nome é coletado. Os números acima são anônimos e não ' +
+    '<small>Nenhum nome e coletado. Os numeros acima sao anonimos e nao ' +
     'permitem identificar quem jogou.</small>' +
     '</body></html>';
 }
