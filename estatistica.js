@@ -27,7 +27,7 @@ const ESTATISTICA = (() => {
      COLE AQUI o endereço do aplicativo da planilha (Apps Script).
      Vazio = não envia nada, e o jogo funciona igual.
      --------------------------------------------------------------------- */
-  const URL_ENVIO = '';
+  const URL_ENVIO = 'https://script.google.com/macros/s/AKfycbxFz6X6MVanutovHq9bdNCk3pP71zTMBo56OsBBeYbxaUmg2oqFBW7dHtakCKG84d8eVQ/exec';
 
   const CHAVE_FILA = 'domjose_envios_pendentes';
   const LIMITE_FILA = 40;      // não deixa a fila crescer sem fim
