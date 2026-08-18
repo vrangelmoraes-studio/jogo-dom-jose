@@ -58,7 +58,10 @@ def main():
 
     # No cartaz o QR sai no tamanho natural (escala inteira), sem o CSS
     # esticar nada: módulo com número redondo de pixels é módulo nítido.
-    qr_svg, lado = svg_com_viewbox(8)
+    # escala 7 = 343 px no cartaz (uns 9 cm impressos), que e o tamanho que
+    # cabe na folha com o rodape maior sem cortar nada. Escala INTEIRA de
+    # proposito: modulo com numero redondo de pixels e modulo nitido.
+    qr_svg, lado = svg_com_viewbox(7)
 
     # A marca REAL do colégio vai embutida na página, em base64. Assim o
     # cartaz.html é um arquivo só: dá para mandar por e-mail, abrir em
@@ -107,13 +110,15 @@ CARTAZ = r'''<!DOCTYPE html>
     line-height: 0; margin-bottom: 12px;
   }
   .qr svg { width: {LADO}px; height: {LADO}px; display: block }
-  .como { font-size: 24px; margin: 4px 0 6px; font-weight: bold }
-  .passos { font-size: 19px; line-height: 1.6; color: #3B4A66; margin: 0 0 10px }
-  .url {
-    font-size: 15px; color: #5B6B85; word-break: break-all;
-    background: #fff; border-radius: 12px; padding: 8px 14px;
+  .como { font-size: 26px; margin: 8px 0 8px; font-weight: bold }
+  .passos { font-size: 20px; line-height: 1.6; color: #3B4A66; margin: 0 0 14px }
+  /* Sem o endereço escrito, o rodapé passa a ser o fecho do cartaz:
+     cresce e ganha o azul da marca. */
+  .rodape {
+    margin-top: auto; padding-top: 16px;
+    font-size: 30px; font-weight: bold; line-height: 1.35;
+    color: #1B9BF0;
   }
-  .rodape { margin-top: auto; font-size: 15px; color: #7A6A4A }
 </style></head>
 <body><div class="folha">
   <img class="logo" src="{LOGO}" alt="Colégio Dom José">
@@ -128,9 +133,7 @@ CARTAZ = r'''<!DOCTYPE html>
     Abre direto no navegador.<br>
     Não precisa baixar nada, nem criar conta.
   </p>
-  <div class="url">{URL}</div>
-
-  <div class="rodape">Feira de Ciências · 5º ano · Colégio Dom José</div>
+  <div class="rodape">Feira de Ciências · 5º ano<br>Colégio Dom José</div>
 </div>
 <script src="../art.js"></script>
 <script>
