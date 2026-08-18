@@ -14,6 +14,7 @@ Para virar cartaz.png é preciso um navegador; o comando está no fim do arquivo
 Correção de erro nível H: o código continua legível mesmo sujo, amassado ou
 com um pedaço coberto. Numa feira, o cartaz vai ser tocado por muita mão.
 """
+import base64
 import io
 import os
 
@@ -59,9 +60,16 @@ def main():
     # esticar nada: módulo com número redondo de pixels é módulo nítido.
     qr_svg, lado = svg_com_viewbox(8)
 
+    # A marca REAL do colégio vai embutida na página, em base64. Assim o
+    # cartaz.html é um arquivo só: dá para mandar por e-mail, abrir em
+    # outro computador ou levar num pendrive, e a logo vai junto.
+    with open(os.path.join(AQUI, 'marca', 'logo-dom-jose.png'), 'rb') as f:
+        logo64 = base64.b64encode(f.read()).decode('ascii')
+
     cartaz = (CARTAZ.replace('<!--QR-->', qr_svg)
                     .replace('{URL}', URL)
-                    .replace('{LADO}', str(lado)))
+                    .replace('{LADO}', str(lado))
+                    .replace('{LOGO}', 'data:image/png;base64,' + logo64))
     with io.open(os.path.join(PASTA, 'cartaz.html'), 'w', encoding='utf-8') as f:
         f.write(cartaz)
 
@@ -87,7 +95,9 @@ CARTAZ = r'''<!DOCTYPE html>
     display: flex; flex-direction: column; align-items: center;
     background: linear-gradient(180deg, #FFF6E5 0%, #FFE9C4 100%);
   }
-  .logo { width: 300px; margin-bottom: 10px }
+  /* 300px numa folha A4: bem perto do tamanho original do arquivo
+     (871px de largura), então imprime nítido, sem esticar. */
+  .logo { width: 300px; height: auto; display: block; margin: 0 auto 10px }
   h1 { font-size: 54px; margin: 6px 0 0; color: #F5921E; line-height: 1.05 }
   .sub { font-size: 25px; color: #1B9BF0; margin: 4px 0 14px; font-weight: bold }
   .zez { width: 150px; margin: 0 0 6px }
@@ -106,7 +116,7 @@ CARTAZ = r'''<!DOCTYPE html>
   .rodape { margin-top: auto; font-size: 15px; color: #7A6A4A }
 </style></head>
 <body><div class="folha">
-  <div id="logo" class="logo"></div>
+  <img class="logo" src="{LOGO}" alt="Colégio Dom José">
   <h1>O Livro das<br>Descobertas</h1>
   <div class="sub">do fogo à vacina</div>
   <div id="zez" class="zez"></div>
@@ -124,9 +134,9 @@ CARTAZ = r'''<!DOCTYPE html>
 </div>
 <script src="../art.js"></script>
 <script>
-  document.getElementById('logo').innerHTML = ART.logo('');
-  document.getElementById('zez').innerHTML  = ART.zezinho('oi');
-  document.querySelectorAll('#logo svg, #zez svg')
+  // a logo é a marca original do colégio (imagem); só o Zezinho é desenhado
+  document.getElementById('zez').innerHTML = ART.zezinho('oi');
+  document.querySelectorAll('#zez svg')
     .forEach(s => { s.style.width = '100%'; s.style.height = 'auto'; });
 </script>
 </body></html>
