@@ -66,13 +66,18 @@ def main():
     # A marca REAL do colégio vai embutida na página, em base64. Assim o
     # cartaz.html é um arquivo só: dá para mandar por e-mail, abrir em
     # outro computador ou levar num pendrive, e a logo vai junto.
-    with open(os.path.join(AQUI, 'marca', 'logo-dom-jose.png'), 'rb') as f:
-        logo64 = base64.b64encode(f.read()).decode('ascii')
+    def embutir(nome):
+        with open(os.path.join(AQUI, 'marca', nome), 'rb') as f:
+            return 'data:image/png;base64,' + base64.b64encode(f.read()).decode('ascii')
+
+    logo64 = embutir('logo-dom-jose.png')
+    zez64 = embutir('zezinho-original.png')
 
     cartaz = (CARTAZ.replace('<!--QR-->', qr_svg)
                     .replace('{URL}', URL)
                     .replace('{LADO}', str(lado))
-                    .replace('{LOGO}', 'data:image/png;base64,' + logo64))
+                    .replace('{LOGO}', logo64)
+                    .replace('{ZEZINHO}', zez64))
     with io.open(os.path.join(PASTA, 'cartaz.html'), 'w', encoding='utf-8') as f:
         f.write(cartaz)
 
@@ -103,7 +108,19 @@ CARTAZ = r'''<!DOCTYPE html>
   .logo { width: 300px; height: auto; display: block; margin: 0 auto 10px }
   h1 { font-size: 54px; margin: 6px 0 0; color: #F5921E; line-height: 1.05 }
   .sub { font-size: 25px; color: #1B9BF0; margin: 4px 0 14px; font-weight: bold }
-  .zez { width: 150px; margin: 0 0 6px }
+  /* O mascote oficial do colégio recebendo o Zezinho do jogo. O do jogo vai
+     espelhado de propósito: a asa que ele levanta para cumprimentar aponta
+     para o outro, e os dois passam a conversar em vez de só posar lado a lado. */
+  .duo {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 2px; margin: 2px 0 4px;
+  }
+  /* O oficial e maior: e o mascote da escola, o do jogo e a visita.
+     A margem negativa aproxima os dois ate quase se tocarem, e ai a asa
+     levantada vira cumprimento em vez de pose. */
+  .duo .oficial { width: 158px; height: auto; display: block }
+  .duo .dojogo  { width: 122px; margin-left: -30px; margin-bottom: 4px;
+                  transform: scaleX(-1) rotate(7deg); transform-origin: 50% 90% }
   .qr {
     background: #fff; padding: 18px; border-radius: 26px;
     box-shadow: 0 8px 0 rgba(22,41,74,.10);
@@ -124,7 +141,10 @@ CARTAZ = r'''<!DOCTYPE html>
   <img class="logo" src="{LOGO}" alt="Colégio Dom José">
   <h1>O Livro das<br>Descobertas</h1>
   <div class="sub">do fogo à vacina</div>
-  <div id="zez" class="zez"></div>
+  <div class="duo">
+    <img class="oficial" src="{ZEZINHO}" alt="Zezinho, mascote do Colégio Dom José">
+    <div id="zez" class="dojogo"></div>
+  </div>
 
   <div class="qr"><!--QR--></div>
 
